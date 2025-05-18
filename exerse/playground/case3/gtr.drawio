@@ -1,0 +1,58 @@
+<mxfile host="65bd71144e">
+    <diagram id="aP7gb33q84iXdQQwarhY" name="第 1 页">
+        <mxGraphModel dx="1632" dy="563" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#FFFFFF,#2E2E2E)" math="0" shadow="1">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="46" value="jobs" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="-560" y="411" width="194" height="37" as="geometry"/>
+                </mxCell>
+                <mxCell id="49" value="result" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="-321" y="411" width="194" height="37" as="geometry"/>
+                </mxCell>
+                <mxCell id="51" value="" style="edgeStyle=none;html=1;fontFamily=Helvetica;fontSize=18;fontColor=default;" edge="1" parent="1" source="50">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-588" y="430" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="50" value="两个通道" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontFamily=Helvetica;fontSize=18;fontColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="-771" y="414" width="90" height="34" as="geometry"/>
+                </mxCell>
+                <mxCell id="52" value="分发任务for循环" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="-769" y="577" width="134" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="53" style="edgeStyle=none;html=1;entryX=0.538;entryY=0.892;entryDx=0;entryDy=0;entryPerimeter=0;fontFamily=Helvetica;fontSize=18;fontColor=default;" edge="1" parent="1" source="52" target="46">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="54" value="负责完成任务worker（）" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="-439" y="656" width="286" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="55" style="edgeStyle=none;html=1;entryX=0.543;entryY=0.914;entryDx=0;entryDy=0;entryPerimeter=0;fontFamily=Helvetica;fontSize=18;fontColor=default;" edge="1" parent="1" source="54" target="49">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="56" value="done（）" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];rounded=0;strokeColor=default;fontFamily=Helvetica;fontSize=18;fontColor=default;fillColor=default;" vertex="1" connectable="0" parent="55">
+                    <mxGeometry x="0.178" y="3" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="57" value="add（）" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="-541" y="822" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" style="edgeStyle=none;html=1;entryX=0.538;entryY=0.907;entryDx=0;entryDy=0;entryPerimeter=0;fontFamily=Helvetica;fontSize=18;fontColor=default;" edge="1" parent="1" source="57" target="54">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="60" style="edgeStyle=none;html=1;fontFamily=Helvetica;fontSize=18;fontColor=default;" edge="1" parent="1" source="59" target="57">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="61" style="edgeStyle=none;html=1;fontFamily=Helvetica;fontSize=18;fontColor=default;" edge="1" parent="1" source="59">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-287.5999755859375" y="527.2000122070312" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="59" value="sync.waitgroup" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=18;fontColor=default;fillColor=default;" vertex="1" parent="1">
+                    <mxGeometry x="-559" y="316" width="200" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

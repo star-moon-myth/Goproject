@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git 交互式工作流程图</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            margin-top: 40px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .workflow-diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start; /* Align items to the top */
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+            gap: 20px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .area {
+            background-color: #ffffff;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            min-width: 220px; /* Minimum width for areas */
+            flex-basis: 22%; /* Distribute space, allowing for wrapping */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease-in-out;
+        }
+        .area:hover {
+            transform: translateY(-5px);
+        }
+
+        .area h3 {
+            margin-top: 0;
+            color: #2980b9;
+            border-bottom: 1px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+        .area p {
+            font-size: 0.9em;
+            color: #555;
+            min-height: 40px; /* Ensure consistent height for descriptions */
+        }
+
+        .working-directory { border-color: #2ecc71; } /* Green */
+        .working-directory h3 { color: #27ae60; }
+
+        .staging-area { border-color: #f1c40f; } /* Yellow */
+        .staging-area h3 { color: #f39c12; }
+
+        .local-repo { border-color: #3498db; } /* Blue */
+        .local-repo h3 { color: #2980b9; }
+
+        .remote-repo { border-color: #9b59b6; } /* Purple */
+        .remote-repo h3 { color: #8e44ad; }
+
+        .arrow-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-grow: 1; /* Allow arrows to take up space */
+            padding: 10px 0;
+            min-width: 150px; /* Ensure arrows have some width */
+        }
+
+        .arrow {
+            font-size: 2.5em;
+            color: #7f8c8d;
+            margin: 5px 0;
+            position: relative;
+        }
+        .arrow.right::after { content: '→'; }
+        .arrow.left::after { content: '←'; }
+        .arrow.up::after { content: '↑'; }
+        .arrow.down::after { content: '↓'; }
+        .arrow.bidirectional::after { content: '↔'; }
+
+
+        .commands {
+            font-size: 0.85em;
+            margin-top: 5px;
+            background-color: #ecf0f1;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px dashed #bdc3c7;
+            text-align: left;
+            white-space: pre-wrap; /* Allow wrapping for long commands */
+        }
+
+        .commands strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+
+        code {
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: "Courier New", Courier, monospace;
+            color: #c0392b;
+        }
+
+        .commands ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 5px;
+        }
+        .commands li {
+            margin-bottom: 5px;
+        }
+        .commands li .cmd-desc {
+            font-size: 0.9em;
+            color: #555;
+            display: block;
+            margin-left: 10px;
+        }
+        .command-section {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .command-section h3 {
+            margin-top: 0;
+            color: #16a085;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 900px) {
+            .workflow-diagram {
+                flex-direction: column;
+                align-items: center;
+            }
+            .area {
+                flex-basis: 80%; /* Full width on smaller screens */
+                margin-bottom: 20px;
+            }
+            .arrow-group {
+                min-width: auto;
+                width: 100%;
+            }
+            .arrow.right::after, .arrow.left::after {
+                content: '↓'; /* Change horizontal to vertical arrows */
+            }
+        }
+        @media (max-width: 480px) {
+            .area {
+                min-width: 90%;
+            }
+            .commands {
+                font-size: 0.8em;
+            }
+        }
+
+        .details-container {
+            margin-top: 20px;
+        }
+
+        details {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+            color: #2c3e50;
+        }
+        summary:hover {
+            color: #3498db;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Git 交互式工作流程与命令详解</h1>
+
+        <div class="workflow-diagram">
+            <!-- 工作区 -->
+            <div class="area working-directory">
+                <h3>1. 工作区 (Working Directory)</h3>
+                <p>你实际编辑和修改文件的项目目录。</p>
+                <div class="details-container">
+                    <details>
+                        <summary>相关检查与撤销命令</summary>
+                        <div class="commands">
+                            <ul>
+                                <li><code>git status</code><span class="cmd-desc">查看工作区和暂存区状态</span></li>
+                                <li><code>git diff</code><span class="cmd-desc">查看工作区相对于暂存区的改动</span></li>
+                                <li><code>git diff HEAD</code><span class="cmd-desc">查看工作区相对于最新提交的改动</span></li>
+                                <li><code>git checkout -- <file></code><span class="cmd-desc">撤销工作区中指定文件的修改 (慎用！会丢失修改)</span></li>
+                                <li><code>git restore <file></code><span class="cmd-desc">同上，撤销工作区修改 (新版Git推荐)</span></li>
+                                <li><code>git clean -fd</code><span class="cmd-desc">移除未被追踪的文件和目录 (慎用！)</span></li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <div class="arrow-group">
+                <div class="commands">
+                    <strong>添加到暂存区:</strong>
+                    <ul>
+                        <li><code>git add <file></code><span class="cmd-desc">将指定文件添加到暂存区</span></li>
+                        <li><code>git add .</code><span class="cmd-desc">将当前目录所有修改和新文件添加到暂存区</span></li>
+                        <li><code>git add -u</code><span class="cmd-desc">仅添加已跟踪文件的修改到暂存区</span></li>
+                        <li><code>git add -p</code><span class="cmd-desc">交互式选择要暂存的代码块</span></li>
+                    </ul>
+                </div>
+                <div class="arrow right"></div>
+                <div class="arrow left"></div>
+                 <div class="commands">
+                    <strong>取消暂存:</strong>
+                    <ul>
+                        <li><code>git reset HEAD <file></code><span class="cmd-desc">将文件从暂存区移回工作区 (保留修改)</span></li>
+                        <li><code>git restore --staged <file></code><span class="cmd-desc">同上，取消暂存 (新版Git推荐)</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 暂存区 -->
+            <div class="area staging-area">
+                <h3>2. 暂存区 (Staging Area / Index)</h3>
+                <p>一个临时区域，保存了你下次要提交的文件快照。</p>
+                 <div class="details-container">
+                    <details>
+                        <summary>相关检查命令</summary>
+                        <div class="commands">
+                            <ul>
+                                <li><code>git status</code><span class="cmd-desc">查看暂存区状态</span></li>
+                                <li><code>git diff --staged</code><span class="cmd-desc">查看暂存区相对于最新提交的改动</span></li>
+                                <li><code>git diff --cached</code><span class="cmd-desc">同上</span></li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <div class="arrow-group">
+                <div class="commands">
+                    <strong>提交到本地仓库:</strong>
+                    <ul>
+                        <li><code>git commit -m "提交信息"</code><span class="cmd-desc">提交暂存区内容并附带信息</span></li>
+                        <li><code>git commit</code><span class="cmd-desc">提交暂存区内容 (会打开编辑器写信息)</span></li>
+                        <li><code>git commit -a -m "信息"</code><span class="cmd-desc">跳过暂存，直接提交已跟踪文件的修改</span></li>
+                        <li><code>git commit --amend</code><span class="cmd-desc">修改最后一次提交 (不要用于已推送的提交)</span></li>
+                    </ul>
+                </div>
+                <div class="arrow right"></div>
+                 <div class="arrow left"></div>
+                 <div class="commands">
+                    <strong>版本回退:</strong>
+                    <ul>
+                        <li><code>git reset --soft HEAD^</code><span class="cmd-desc">回退到上个版本 (保留工作区和暂存区)</span></li>
+                        <li><code>git reset --mixed HEAD^</code><span class="cmd-desc">回退到上个版本 (保留工作区，清空暂存区) - 默认</span></li>
+                        <li><code>git reset --hard HEAD^</code><span class="cmd-desc">回退到上个版本 (清空工作区和暂存区 - 慎用！)</span></li>
+                        <li><code>git revert <commit-id></code><span class="cmd-desc">创建一个新的提交来撤销某次提交的更改</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 本地仓库 -->
+            <div class="area local-repo">
+                <h3>3. 本地仓库 (Local Repository)</h3>
+                <p>项目所有版本历史的完整副本，存储在 <code>.git</code> 目录中。</p>
+                 <div class="details-container">
+                    <details>
+                        <summary>查看历史与分支命令</summary>
+                        <div class="commands">
+                            <ul>
+                                <li><code>git log</code><span class="cmd-desc">查看提交历史</span></li>
+                                <li><code>git log --oneline</code><span class="cmd-desc">单行简洁历史</span></li>
+                                <li><code>git log --graph --oneline --all --decorate</code><span class="cmd-desc">图形化分支历史</span></li>
+                                <li><code>git branch</code><span class="cmd-desc">列出本地分支</span></li>
+                                <li><code>git branch <name></code><span class="cmd-desc">创建新分支</span></li>
+                                <li><code>git switch <name></code><span class="cmd-desc">切换分支 (推荐)</span></li>
+                                <li><code>git checkout <name></code><span class="cmd-desc">切换分支 (旧版)</span></li>
+                                <li><code>git switch -c <name></code><span class="cmd-desc">创建并切换到新分支</span></li>
+                                <li><code>git checkout -b <name></code><span class="cmd-desc">创建并切换到新分支 (旧版)</span></li>
+                                <li><code>git merge <branch></code><span class="cmd-desc">合并指定分支到当前分支</span></li>
+                                <li><code>git rebase <branch></code><span class="cmd-desc">变基 (另一种合并方式，使历史线性)</span></li>
+                                <li><code>git branch -d <name></code><span class="cmd-desc">删除已合并分支</span></li>
+                                <li><code>git branch -D <name></code><span class="cmd-desc">强制删除分支</span></li>
+                                <li><code>git tag <tagname></code><span class="cmd-desc">创建标签 (如版本号)</span></li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+             <div class="arrow-group">
+                <div class="commands">
+                    <strong>推送到远程:</strong>
+                    <ul>
+                        <li><code>git push origin <branch></code><span class="cmd-desc">推送本地分支到远程</span></li>
+                        <li><code>git push -u origin <branch></code><span class="cmd-desc">推送并设置上游分支</span></li>
+                        <li><code>git push</code><span class="cmd-desc">推送当前分支到其上游分支</span></li>
+                        <li><code>git push origin --tags</code><span class="cmd-desc">推送所有本地标签</span></li>
+                         <li><code>git push origin :<branch></code><span class="cmd-desc">删除远程分支 (新版: <code>git push origin --delete <branch></code>)</span></li>
+                    </ul>
+                </div>
+                <div class="arrow bidirectional"></div>
+                 <div class="commands">
+                    <strong>拉取/获取远程:</strong>
+                    <ul>
+                        <li><code>git pull origin <branch></code><span class="cmd-desc">拉取远程分支并合并 (fetch + merge)</span></li>
+                        <li><code>git pull</code><span class="cmd-desc">拉取当前分支的上游分支并合并</span></li>
+                        <li><code>git fetch origin</code><span class="cmd-desc">获取远程所有分支的最新状态 (不合并)</span></li>
+                        <li><code>git fetch origin <branch></code><span class="cmd-desc">获取远程特定分支的最新状态</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 远程仓库 -->
+            <div class="area remote-repo">
+                <h3>4. 远程仓库 (Remote Repository)</h3>
+                <p>托管在服务器上的代码仓库 (如 GitHub, GitLab)。</p>
+                 <div class="details-container">
+                    <details>
+                        <summary>相关配置与克隆命令</summary>
+                        <div class="commands">
+                            <ul>
+                                <li><code>git clone <url></code><span class="cmd-desc">克隆远程仓库到本地</span></li>
+                                <li><code>git remote add origin <url></code><span class="cmd-desc">关联本地仓库到远程 (origin是别名)</span></li>
+                                <li><code>git remote -v</code><span class="cmd-desc">查看已配置的远程仓库</span></li>
+                                <li><code>git remote show origin</code><span class="cmd-desc">查看远程仓库origin的详细信息</span></li>
+                                <li><code>git remote rename old new</code><span class="cmd-desc">重命名远程仓库别名</span></li>
+                                <li><code>git remote rm <name></code><span class="cmd-desc">移除远程仓库关联</span></li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <div class="command-section">
+            <h3>其他重要 Git 概念与命令</h3>
+
+            <details>
+                <summary><strong>.gitignore 文件</strong> - 忽略不想追踪的文件</summary>
+                <div class="commands">
+                    <p>在项目根目录创建 <code>.gitignore</code> 文件，列出要忽略的文件或文件夹模式，例如：</p>
+                    <code>
+*.log
+node_modules/
+.DS_Store
+dist/
+                    </code>
+                    <ul>
+                        <li><code>git rm --cached <file></code><span class="cmd-desc">如果文件已被追踪，用此命令停止追踪，然后添加到 .gitignore</span></li>
+                    </ul>
+                </div>
+            </details>
+
+            <details>
+                <summary><strong>git stash</strong> - 临时保存工作区改动</summary>
+                <div class="commands">
+                    <ul>
+                        <li><code>git stash</code><span class="cmd-desc">保存当前工作区和暂存区的改动到“储藏区”</span></li>
+                        <li><code>git stash save "message"</code><span class="cmd-desc">保存并附带信息</span></li>
+                        <li><code>git stash list</code><span class="cmd-desc">查看所有储藏</span></li>
+                        <li><code>git stash pop</code><span class="cmd-desc">恢复最近的储藏并从列表删除 (可能有冲突)</span></li>
+                        <li><code>git stash apply stash@{N}</code><span class="cmd-desc">恢复指定的储藏 (不删除)</span></li>
+                        <li><code>git stash drop stash@{N}</code><span class="cmd-desc">删除指定的储藏</span></li>
+                        <li><code>git stash clear</code><span class="cmd-desc">清空所有储藏</span></li>
+                    </ul>
+                </div>
+            </details>
+
+            <details>
+                <summary><strong>全局配置 (首次安装Git后设置)</strong></summary>
+                <div class="commands">
+                    <ul>
+                        <li><code>git config --global user.name "Your Name"</code></li>
+                        <li><code>git config --global user.email "youremail@example.com"</code></li>
+                        <li><code>git config --global core.autocrlf input</code> (Windows推荐) / <code>true</code> (Mac/Linux推荐)</li>
+                        <li><code>git config --list</code><span class="cmd-desc">查看所有配置</span></li>
+                    </ul>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <script>
+        // No complex JS needed for this static visualization,
+        // but you could add interactivity here later if desired,
+        // e.g., clicking a command shows more details or examples.
+        console.log("Git Workflow Diagram Loaded!");
+    </script>
+</body>
+</html>

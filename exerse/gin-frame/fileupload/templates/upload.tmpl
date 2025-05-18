@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高端文件管理系统</title>
+    <style>
+        :root {
+            --primary-color: #3a7bd5;
+            --secondary-color: #00d2ff;
+            --accent-color: #f857a6;
+            --dark-color: #2c3e50;
+            --light-color: #f5f7fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--light-color), #e0e5ec);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-weight: 300;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .upload-section {
+            padding: 2.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .upload-section:last-child {
+            border-bottom: none;
+        }
+        
+        .upload-section h2 {
+            color: var(--dark-color);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .upload-section h2:before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 30px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+            margin-right: 15px;
+            border-radius: 5px;
+        }
+        
+        .form-container {
+            background: var(--light-color);
+            padding: 2rem;
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .file-input-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+            border: 2px dashed #ccd7e0;
+            border-radius: 10px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .file-input-container:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .file-input-container input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-input-container .icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .file-input-container p {
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-input-container .browse-text {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(58, 123, 213, 0.4);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(58, 123, 213, 0.6);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .footer {
+            padding: 1.5rem;
+            text-align: center;
+            color: #888;
+            font-size: 0.85rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+            }
+            
+            .upload-section {
+                padding: 1.5rem;
+            }
+            
+            .form-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>高端文件管理系统</h1>
+            <p>快速、安全、高效地管理您的重要文档</p>
+        </div>
+        
+        <div class="upload-section">
+            <h2>单文件上传</h2>
+            <form action="/upload/single" method="post" enctype="multipart/form-data">
+                <div class="form-container">
+                    <div class="file-input-container">
+                        <div class="icon">📄</div>
+                        <p>拖放文件到此处或</p>
+                        <p><span class="browse-text">浏览文件</span></p>
+                        <input type="file" name="file">
+                    </div>
+                    <button type="submit" class="submit-btn">上传文件</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="upload-section">
+            <h2>多文件上传</h2>
+            <form action="/upload/multiple" method="post" enctype="multipart/form-data">
+                <div class="form-container">
+                    <div class="file-input-container">
+                        <div class="icon">📑</div>
+                        <p>拖放多个文件到此处或</p>
+                        <p><span class="browse-text">浏览文件</span></p>
+                        <input type="file" name="files" multiple>
+                    </div>
+                    <button type="submit" class="submit-btn">上传文件</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="footer">
+            © 2025 高端文件管理系统 | 保护您的数据安全
+        </div>
+    </div>
+</body>
+</html>

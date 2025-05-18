@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>简易API测试工具</title>
+    <style>
+        :root {
+            --primary: #2196F3;
+            --success: #4CAF50;
+            --danger: #f44336;
+            --dark: #333;
+            --light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 2rem;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .method-select {
+            max-width: 120px;
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .param-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .param-row input {
+            flex: 1;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .response {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="apiForm" target="responseFrame">
+            <div class="form-group">
+                <label>请求方法</label>
+                <select class="method-select" name="_method" required>
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>请求地址</label>
+                <input type="url" name="url" placeholder="http://api.example.com/resource" required>
+            </div>
+
+            <div class="form-group">
+                <label>请求参数</label>
+                <div id="paramsContainer">
+                    <div class="param-row">
+                        <input type="text" name="paramKey[]" placeholder="参数名">
+                        <input type="text" name="paramValue[]" placeholder="参数值">
+                    </div>
+                </div>
+                <button type="button" onclick="addParam()">添加参数</button>
+            </div>
+
+            <div class="form-group">
+                <label>请求头</label>
+                <textarea name="headers" rows="3" placeholder="Content-Type: application/json"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>请求体（JSON）</label>
+                <textarea name="body" rows="5" placeholder='{"key": "value"}'></textarea>
+            </div>
+
+            <button type="submit">发送请求</button>
+        </form>
+
+        <div class="response" id="response"></div>
+    </div>
+
+    <script>
+        // 动态添加参数
+        function addParam() {
+            const container = document.getElementById('paramsContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'param-row';
+            newRow.innerHTML = `
+                <input type="text" name="paramKey[]" placeholder="参数名">
+                <input type="text" name="paramValue[]" placeholder="参数值">
+            `;
+            container.appendChild(newRow);
+        }
+
+        // 表单提交处理
+        document.getElementById('apiForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const params = {
+                method: formData.get('_method'),
+                url: formData.get('url'),
+                headers: parseHeaders(formData.get('headers')),
+                body: formData.get('body')
+            };
+
+            // 处理查询参数
+            const paramKeys = formData.getAll('paramKey[]');
+            const paramValues = formData.getAll('paramValue[]');
+            const queryParams = new URLSearchParams();
+            paramKeys.forEach((key, index) => {
+                if (key && paramValues[index]) {
+                    queryParams.append(key, paramValues[index]);
+                }
+            });
+
+            // 构建最终URL
+            let finalUrl = params.url;
+            if (queryParams.toString()) {
+                finalUrl += (finalUrl.includes('?') ? '&' : '?') + queryParams.toString();
+            }
+
+            try {
+                const response = await fetch(finalUrl, {
+                    method: params.method,
+                    headers: params.headers,
+                    body: params.method === 'GET' ? null : params.body
+                });
+
+                const data = await response.text();
+                displayResponse({
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: [...response.headers],
+                    body: data
+                });
+            } catch (error) {
+                displayResponse({ error: error.message });
+            }
+        });
+
+        function parseHeaders(headerText) {
+            const headers = new Headers();
+            headerText.split('\n').forEach(line => {
+                const [key, value] = line.split(':').map(s => s.trim());
+                if (key && value) headers.append(key, value);
+            });
+            return headers;
+        }
+
+        function displayResponse(response) {
+            const container = document.getElementById('response');
+            let content = '';
+            
+            if (response.error) {
+                content = `❌ 错误: ${response.error}`;
+                container.style.color = 'var(--danger)';
+            } else {
+                content = `HTTP ${response.status} ${response.statusText}\n\n` +
+                          `响应头:\n${JSON.stringify(Object.fromEntries(response.headers), null, 2)}\n\n` +
+                          `响应体:\n${response.body}`;
+                container.style.color = response.status >= 400 ? 'var(--danger)' : 'var(--success)';
+            }
+            
+            container.textContent = content;
+        }
+    </script>
+</body>
+</html>

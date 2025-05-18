@@ -1,0 +1,10 @@
+请假条
+
+尊敬的 {{.TeacherName}} 老师：
+
+    我是 {{.ClassName}} 班的 {{.StudentName}}，因 {{.Reason}}，
+需要请假 {{.Days}} 天，从 {{.StartDate}} 到 {{.EndDate}}。
+恳请批准！
+
+                                         请假人：{{.StudentName}}
+                                         日期：{{.Date}}
