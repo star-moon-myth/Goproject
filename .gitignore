@@ -1,38 +1,25 @@
-# 忽略系统生成的文件
-.DS_Store          # macOS 的桌面服务文件
-Thumbs.db          # Windows 的缩略图文件
+# If you prefer the allow list template instead of the deny list, see community template:
+# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
+#
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-# 忽略编辑器/IDE 生成的文件
-.vscode/          # VSCode 配置文件
-.idea/            # JetBrains IDE（如 IntelliJ）
-*.sublime-project # Sublime Text 项目文件
+# Test binary, built with `go test -c`
+*.test
 
-# 忽略编译/构建生成的文件
-node_modules/     # Node.js 依赖
-dist/             # 构建输出目录
-build/            # 另一个常见的构建目录
-*.o               # C/C++ 编译的中间文件
-*.class           # Java 编译的类文件
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
 
-# 忽略日志和临时文件
-*.log             # 日志文件
-*.tmp             # 临时文件
-temp/             # 临时文件夹
+# Dependency directories (remove the comment below to include it)
+# vendor/
 
-# 忽略环境配置文件（防止泄露敏感信息）
-.env              # 环境变量文件
-.env.local
-.env.development
-.env.production
+# Go workspace file
+go.work
+go.work.sum
 
-# 忽略 Python 相关
-__pycache__/      # Python 字节码缓存
-*.pyc             # Python 编译文件
-venv/             # Python 虚拟环境
-
-# 忽略依赖锁文件（视情况保留）
-# package-lock.json  # 如果用 npm，视情况忽略
-# yarn.lock          # 如果用 yarn，视情况忽略
-
-# 忽略测试覆盖率文件
-coverage/         # 测试覆盖率报告
+# env file
+.env
