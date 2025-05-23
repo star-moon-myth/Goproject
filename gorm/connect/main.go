@@ -1,6 +1,7 @@
 package main
 
 import (
+	_"errors"
 	"fmt"
 	"log"
 	"time"
@@ -81,6 +82,43 @@ func main() {
 	// 		fmt.Printf("user:id=%d,name=%s,email=%s,age=%d\n",u.ID,u.Name,u.Email,u.Age)
 	// 	}
 	// }
-	
-	
+	// var firstuser User1
+	// result:=db.First(&firstuser)
+	// if result.Error!=nil{
+	// 	if errors.Is(result.Error,gorm.ErrRecordNotFound){
+	// 		fmt.Println("未找到用户记录")
+	// 	}else{
+	// 		log.Printf("查询第一条用户失败:%v",result.Error)
+	// 	}
+	// }else{
+	// 	fmt.Printf("查到第一条用户,用户id:%d,用户名:%s\n",firstuser.ID,firstuser.Name)
+	// }
+
+	// var userbyid User1
+	// db.First(&userbyid,4)
+	// fmt.Printf("查到用户id:4,用户名:%s\n",userbyid.Name)
+
+	// var activeuser User1
+	// db.Where("name=? and active=?","David",false).First(&activeuser)
+	// fmt.Printf("查到用户,用户id:%d,用户名:%s,邮箱:%s\n",activeuser.ID,activeuser.Name,activeuser.Email)
+	// var allusers []User1
+	// result:=db.Find(&allusers)
+	// if result.Error!=nil{
+	// 	log.Printf("查询所有用户失败%v\n",result.Error)		
+	// }else{
+	// 	fmt.Printf("查询到%d个用户:\n",result.RowsAffected)
+	// 	for _,u:=range allusers{
+	// 		fmt.Printf("ID=%d,Name=%s,Email=%s\n",u.ID,u.Name,u.Email)
+	// 	}
+	// }
+
+	var activeusers []User1
+	result:=db.Where("active=? and age>?",false,20).Find(&activeusers)
+	fmt.Printf("查询到%d个用户\n",result.RowsAffected)
+
+	var userIn []User1
+	result=db.Where("name in ?",[]string{"Alice","Bob"}).Find(&userIn)
+	fmt.Printf("查询到%d个用户\n",result.RowsAffected)
+
+
 }
